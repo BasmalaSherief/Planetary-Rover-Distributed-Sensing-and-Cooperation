@@ -1,0 +1,3 @@
+[submodule "enhsp/ENHSP-Public"]
+	path = enhsp/ENHSP-Public
+	url = https://github.com/hstairs/enhsp.git
