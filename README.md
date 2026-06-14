@@ -2,8 +2,15 @@
 
 ## Introduction
 
-Since long time people have always wanted to reach the moon. Even in movies back then this was a hot topic. A film like a trip to the moon proves that. ![A Trip to the moon banner](/assets/TripToTheMoon.jpeg). When they already got there, they wanted to explore and exploit the other planets minerals and gazes. So now What about AI? Back then (and till now) they have had a false impression about AI; it can control you like in the movie Space Odyssey. ![A Space Odyssey](/assets/ASpaceOdyssey.jpeg).
-Other concerns may arise regarding astronauts, what if they went and lost there? like the movie interstellar ![Interstellar](/assets/Interstellar.jpeg)
+Since long time people have always wanted to reach the moon. Even in movies back then this was a hot topic. A film like a trip to the moon proves that. [A Trip to the moon banner](assets/TripToTheMoon.jpeg). When they already got there, they wanted to explore and exploit the other planets minerals and gazes. So now What about AI? Back then (and till now) they have had a false impression about AI; it can control you like in the movie Space Odyssey. [A Space Odyssey](assets/ASpaceOdyssey.jpg).
+Other concerns may arise regarding astronauts, what if they went and lost there? like the movie interstellar [Interstellar](assets/Interstellar.jpeg).
+
+<p align="center">
+  <img src="assets/TripToTheMoon.jpeg" alt="A Trip to the moon banner" height="180" style="margin: 0 10px;" />
+  <img src="assets/ASpaceOdyssey.jpg" alt="A Space Odyssey" height="180" style="margin: 0 10px;" />
+  <img src="assets/Interstellar.jpeg" alt="Interstellar" height="180" style="margin: 0 10px;" />
+</p>
+
 So We introduce this multidisciplinary system to plan the system of multi rovers autonomously operated. 
 
 ## Abstract
@@ -27,7 +34,9 @@ The terrain is abstracted as a waypoint graph using a (connected ?l1 ?l2) predic
 
 - Spectrometer Rover: A specialized agent that contains the only analysis hardware. It relies entirely on the Navigator to bring it physical samples or spatial data.
 
-![EnvironmentMap](/assets/EnvironmentMap.png)
+<p align="center">
+  <img src="assets/EnvironmentMap.png" alt="EnvironmentMap" width="550" />
+</p>
 
 #### Sample Logic & Explicit Transfer
 To ensure analysis is not universally available, the analysis action is strictly restricted to the Spectrometer rover. Furthermore, the domain forces cooperation by categorizing samples by weight, creating two distinct dependency paths:
@@ -40,7 +49,11 @@ To ensure analysis is not universally available, the analysis action is strictly
 To merge these two cooperative strategies smoothly, the analysis action utilizes :disjunctive-preconditions. The Spectrometer can only analyze a sample if it is at the sample's location AND either (sample-delivered) is true, OR (location-known) is true.
 
 #### Problem Scenario & Plan Output
-The dual-sample-mission problem file tests this architecture by deploying both rovers to a graph with one pebble and one boulder. As shown in the generated ENHSP Plan Output (referenced in ![Plan for the PDDL model](assets/PlanetaryRovers_pddl_plan.png), the planner successfully deduces the required 14-step cooperative sequence. The Navigator collects and delivers the pebble, then explores the crater to find the boulder, saving its location and transmitting it to the Spectrometer, which then travels to the crater to complete the final analysis.
+The dual-sample-mission problem file tests this architecture by deploying both rovers to a graph with one pebble and one boulder. As shown in the generated ENHSP Plan Output (referenced in [Plan for the PDDL model](assets/PlanetaryRovers_pddl_plan.png)), the planner successfully deduces the required 14-step cooperative sequence. The Navigator collects and delivers the pebble, then explores the crater to find the boulder, saving its location and transmitting it to the Spectrometer, which then travels to the crater to complete the final analysis.
+
+<p align="center">
+  <img src="assets/PlanetaryRovers_pddl_plan.png" alt="Plan for the PDDL model" width="400" />
+</p>
 
 ### Part 2: PDDL+ Model (Continuous Time & Dynamics)
 
@@ -63,7 +76,7 @@ Unlike actions, which the planner chooses to execute, :events in PDDL+ are trigg
 #### Communication State Architecture
 The following diagram illustrates the interaction between the discrete actions, the continuous process, and the autonomous events governing the communication protocol:
 
-```
+```mermaid
 stateDiagram-v2
     direction TB
     
@@ -81,7 +94,11 @@ stateDiagram-v2
 ```
 
 #### Temporal Feasibility & Plan Output
-The planner must now reason about idle time. As shown in the generated ENHSP plan ![Plan for the PDDL+ Model](/assets/PlanetaryRovers_pddl+_plan.png), the planner executes the spatial navigation and data logging at time 0.0. However, after initiating start-transmit, the planner explicitly injects a -----waiting---- [5.0] block. Because the analyze action requires the transfer-complete event to have fired, the Spectrometer is forced to wait exactly 5.0 seconds for the continuous process to finish before it can legally execute its final analysis.
+The planner must now reason about idle time. As shown in the generated ENHSP plan [Plan for the PDDL+ Model](assets/PlanetaryRovers_pddl+_plan.png), the planner executes the spatial navigation and data logging at time 0.0. However, after initiating start-transmit, the planner explicitly injects a -----waiting---- [5.0] block. Because the analyze action requires the transfer-complete event to have fired, the Spectrometer is forced to wait exactly 5.0 seconds for the continuous process to finish before it can legally execute its final analysis.
+
+<p align="center">
+  <img src="assets/PlanetaryRovers_pddl+_plan.png" alt="Plan for the PDDL+ Model" width="350" />
+</p>
 
 ## Discussion & Analysis
 
