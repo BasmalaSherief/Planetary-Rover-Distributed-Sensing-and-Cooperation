@@ -28,7 +28,7 @@ For Communication, we are using the logic of Transmitting/Receiving technique.
 The foundation of the architecture relies on a symbolic, graph-based spatial model encoded in standard PDDL. This phase of the project models heterogeneous agents, distinct operational roles, and mandatory physical or data-driven cooperation.
 
 #### Environment & Agent Representation
-The terrain is abstracted as a waypoint graph using a (connected ?l1 ?l2) predicate, forcing the rovers to navigate linearly through specific nodes (e.g., Base to Zone-Alpha to Rock-Bed). The agents are explicitly divided into two heterogeneous sub-types with asymmetric capabilities:
+The terrain is abstracted as a waypoint graph using a (connected ?l1 ?l2) predicate, forcing the rovers to navigate linearly through specific nodes. In the context of planning, this creates a "fictional interface" that deliberately abstracts away the continuous geometry and kinodynamic constraints of the real world to keep the symbolic search tractable.
 
 - Navigator Rover: A highly mobile agent equipped with grippers for light objects and sensors to log coordinates. It lacks analysis capabilities.
 
@@ -57,7 +57,7 @@ The dual-sample-mission problem file tests this architecture by deploying both r
 
 ### Part 2: PDDL+ Model (Continuous Time & Dynamics)
 
-To fulfill the advanced requirements of the assignment, the basic domain was extended into PDDL+. This transition shifts the paradigm from instantaneous, discrete logic to continuous time #t, allowing the architecture to model real-world physical constraints such as data latency and signal degradation.
+To fulfill the advanced requirements of the assignment, the basic domain was extended into PDDL+. This transition shifts the paradigm from instantaneous, discrete logic to a hybrid dynamical system utilizing continuous time #t. This allows the architecture to directly model real-world physical constraints—such as data latency and signal degradation—within the planner itself, rather than delegating them entirely to low-level controllers.
 
 #### Continuous Processes (Data Latency)
 Data transfer is no longer modeled as an instant transaction. Instead, the Navigator initiates the transfer via a discrete start-transmit action. This triggers an active continuous :process called data-latency.
@@ -120,9 +120,18 @@ Modelling communication reveals the limitations of classical PDDL and the necess
 
 ## Future Work & Scalability
 
-1. Scaling to N Rovers: Currently, the domain supports a limited number of rovers. Scaling to a massive N-rover swarm introduces the "state explosion problem" in symbolic planning. Future iterations could explore decentralized planning, where each rover computes its own localized plan rather than relying on a single global solver.
+### Scaling to N Rovers:
+   1. Scaling to N Rovers: Currently, the domain supports a limited number of rovers. Scaling to a massive N-rover swarm introduces the "state explosion problem" in symbolic planning. Future iterations could explore decentralized planning, where each rover computes its own localized plan rather than relying on a single global solver.
 
-2. Continuous Collision Avoidance: While the current PDDL domain prevents rovers from occupying the same grid waypoint simultaneously, real-world execution requires physical safety margins. Future work would integrate Morse Potential Functions at the local control level. By treating each rover as a repelling force (short-range repulsion) and an attracting force (long-range formation maintenance), the swarm can dynamically avoid physical collisions during transit without needing to constantly replan at the symbolic level.
+   2. Continuous Collision Avoidance: While the current PDDL domain prevents rovers from occupying the same grid waypoint simultaneously, real-world execution requires physical safety margins. Future work would integrate Morse Potential Functions at the local control level. By treating each rover as a repelling force (short-range repulsion) and an attracting force (long-range formation maintenance), the swarm can dynamically avoid physical collisions during transit without needing to constantly replan at the symbolic level.
+
+### Bridging the Task-Motion Gap: 
+    
+   While the current PDDL domain uses idealized geometric assumptions (preventing rovers from occupying the same symbolic waypoint simultaneously), real-world execution requires physical safety margins. Future work will bridge the Task-Motion Gap by implementing a true Task-Motion Planning (TMP) architecture.
+
+  1. At the symbolic level, the planner will use semantic attachments to call external continuous solvers (e.g., RRT) to validate collision-free trajectories in the Configuration Space (C-Space) during the search phase.
+
+  2. At the execution level, local reactive control will be handled using Morse Potential Functions. By treating each rover as a repelling force (short-range repulsion) and an attracting force (long-range formation maintenance), the swarm can dynamically adjust to physical nuances without causing the symbolic planner to constantly fail and replan.
 
 ## References
 
